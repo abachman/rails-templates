@@ -1,5 +1,8 @@
 # Rails App Template v20100315
 
+# Set up git repository
+git :init
+
 # application
 gem 'will_paginate'
 gem 'hpricot'
@@ -9,13 +12,6 @@ gem 'paperclip'
 
 # database
 gem 'rails_structure_loading'
-
-# test
-gem 'factory_girl'
-gem 'shoulda'
-gem 'redgreen'
-gem 'timecop'
-gem 'hydra'
 
 # Install gems on local system
 rake('gems:install', :sudo => true) if yes?('Install gems on local system? (y/n)')
@@ -111,7 +107,9 @@ run 'touch log/.gitignore tmp/.gitignore'
 # Remove unnecessary Rails files
 run 'rm README public/index.html public/favicon.ico public/images/rails.png'
 
-# Set up git repository
-git :init
+# finalize stage 1
 git :add => '.', :commit => "initial commit"
+
+# other templates
+load_template 'http://github.com/abachman/rails-templates/raw/master/template.rb'
 

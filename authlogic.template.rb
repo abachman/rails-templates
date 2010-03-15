@@ -1,6 +1,3 @@
-# authlogic.template.rb
-load_template 'http://github.com/abachman/rails-templates/raw/master/template.rb'
-
 gem 'authlogic'
 rake 'gems:install', :sudo => true
 
@@ -178,5 +175,6 @@ route 'map.resources :user_sessions'
 route 'map.resources :users'
 
 # run migrations
-log "NOTE", "Don't forget to run 'rake db:migrate'."
+rake "db:migrate"
 
+git :add => '.', :commit => "-m 'added authentication'"
