@@ -1,16 +1,16 @@
 # Rails App Template v20100315
 
-# application gems
-gem 'compass'
+# application
 gem 'will_paginate'
 gem 'hpricot'
-gem 'haml'
 gem 'json'
 gem 'state_machine'
-gem 'rails_structure_loading'
-gem 'authlogic'
+gem 'paperclip'
 
-# test gems
+# database
+gem 'rails_structure_loading'
+
+# test
 gem 'factory_girl'
 gem 'shoulda'
 gem 'redgreen'
@@ -21,22 +21,8 @@ gem 'hydra'
 rake('gems:install', :sudo => true) if yes?('Install gems on local system? (y/n)')
 
 # plugins
-plugin 'authlogic', :git => 'git://github.com/binarylogic/authlogic.git'
-plugin 'paperclip', :git => 'git://github.com/thoughtbot/paperclip.git'
 plugin 'exception_notifier', :git => 'git://github.com/rails/exception_notification.git'
 plugin 'state_machine', :git => 'git://github.com/pluginaweek/state_machine.git'
-
-# Use database (active record) session store
-rake('db:sessions:create')
-initializer 'session_store.rb', <<-FILE
-  ActionController::Base.session = { :session_key => '_#{(1..6).map { |x| (65 + rand(26)).chr }.join}_session', :secret => '#{(1..40).map { |x| (65 + rand(26)).chr }.join}' }
-  ActionController::Base.session_store = :active_record_store
-FILE
-
-# # Generate OpenID authentication keys
-# gem 'ruby-openid', :lib => 'openid'
-# plugin 'open_id_authentication', :git => 'git://github.com/rails/open_id_authentication.git'
-# rake('open_id_authentication:db:create')
 
 # Install and configure capistrano
 if yes?("Use capistrano? (y/n)")
@@ -48,15 +34,72 @@ if yes?("Use capistrano? (y/n)")
   FILE
 end
 
-# SLS Specific
+## SLS Specific
+
+# shoulda_girl_scaffold
+inside("lib") do
+  run "mkdir -p generators"
+  inside("generators") do
+    run("git clone git://github.com/abachman/shoulda_girl_scaffold.git lib/generators/shoulda_girl_scaffold && rm -rf shoulda_girl_scaffold/.git"
+  end
+end
+
+# environmentalist
 run "environmentalize"
+
+run "touch config/geminstaller.yml"
+run "touch config/test/geminstaller.yml"
+
+# environmentalist apache
+file "config/development/apache.conf.example", <<-APACHE
+<VirtualHost *:80>
+  ServerName <%= PROJECT_NAME %>.localhost
+  DocumentRoot /home/#{ENV['USER']}/workspace/<%= PROJECT_NAME %>/rails/public
+  RailsEnv development
+</VirtualHost>
+APACHE
+
+file "config/production/apache.conf", <<-APACHE
+<VirtualHost *:80>
+  ServerName <%= PROJECT_NAME %>.com
+  DocumentRoot /home/#{ENV['USER']}/workspace/<%= PROJECT_NAME %>/rails/public
+  RailsEnv development
+</VirtualHost>
+APACHE
+
+# environmentalist databases
+# dev
+file "config/development/database.yml.example", <<-DATABASE
+---
+development:
+  encoding: unicode
+  adapter: postgresql
+  database: <%= PROJECT_NAME %>_development
+DATABASE
+# test
+file "config/test/database.yml.example", <<-DATABASE
+---
+test:
+  encoding: unicode
+  adapter: postgresql
+  database: <%= PROJECT_NAME %>_test
+DATABASE
+# production
+file "config/production/database.yml", <<-DATABASE
+---
+production:
+  encoding: unicode
+  username: deploy
+  adapter: postgresql
+  database: <%= PROJECT_NAME %>
+  password:
+DATABASE
 
 # Create .gitignore file
 file '.gitignore', <<-FILE
 .DS_Store
 log/*.log
 tmp/**/*
-db/*.sqlite3
 .project
 FILE
 
