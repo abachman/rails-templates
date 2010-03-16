@@ -111,5 +111,8 @@ run 'rm README public/index.html public/favicon.ico public/images/rails.png'
 git :add => '.', :commit => "initial commit"
 
 # other templates
-load_template 'http://github.com/abachman/rails-templates/raw/master/template.rb'
+load_template 'http://github.com/smartlogic/rails-templates/raw/master/authlogic.rb'
+load_template 'http://github.com/smartlogic/rails-templates/raw/master/haml.rb'
+load_template 'http://github.com/smartlogic/rails-templates/raw/master/javascript.rb'
+load_template 'http://github.com/smartlogic/rails-templates/raw/master/test.rb'
 
