@@ -1,0 +1,11 @@
+!!!
+
+%html
+  %head
+    = render :partial => 'layouts/header_tags'
+
+    = yield :head
+
+  %body
+    .container_16
+      = yield

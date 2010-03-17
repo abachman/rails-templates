@@ -1,0 +1,8 @@
+= stylesheet_link_tag 'compiled/grid.css', :media => 'screen, projection, print'
+= stylesheet_link_tag 'compiled/text.css', :media => 'screen, projection, print'
+= stylesheet_link_tag 'compiled/application.css', :media => 'screen, projection, print'
+
+= include_javascripts :workspace
+
+/[if IE 6]
+  = stylesheet_link_tag 'compiled/ie.css', :media => 'screen, projection, print'

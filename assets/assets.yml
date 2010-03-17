@@ -1,0 +1,26 @@
+# see documentation at http://documentcloud.github.com/jammit/
+package_assets:         on      # (on, off, always)
+compress_assets:        on         # (on, off)
+gzip_assets:            on          # (on, off)
+template_function:      _.template  # (provided by underscore.js)
+package_path:           assets      # (defaults to assets)
+javascript_compressor:  closure     # (yui, closure)
+
+javascripts:
+  workspace:
+    - public/javascripts/vendor/*.js
+    - public/javascripts/application.js
+    - public/javascripts/**/*.js
+
+# stylesheets:
+#   common:
+#     - public/stylesheets/vendor/reset.css
+#     - public/stylesheets/ui/*.css
+#   workspace:
+#     - public/stylesheets/pages/workspace.css
+#   empty:
+#     - public/stylesheets/pages/empty.css
+#
+# templates:
+#   admin:
+#     - app/views/jst/**/*.jst

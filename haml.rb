@@ -1,9 +1,9 @@
-gem 'haml'
-gem 'compass'
-# 960
-gem 'compass-960-plugin'
+geminstaller 'haml'
+geminstaller 'compass'
+geminstaller 'compass-960-plugin'
 
 run "haml --rails ."
-run "echo -e 'y\nn\n' | compass --rails -f 960"
+run "yes | compass --rails -r ninesixty -f 960 . --force"
 
-git :add => ".", :commit => "-m 'Added haml for views and compass for css'"
+git :add => "." 
+git :commit => "-m 'Added haml for views and compass for css'"
