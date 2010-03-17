@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  validates_presence_of :email
+
   # authlogic configuration
   acts_as_authentic do |c|
     c.login_field = :email

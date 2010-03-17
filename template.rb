@@ -1,5 +1,6 @@
 # Rails App Template v20100315
 
+# Helpers
 def template_with_env filename
   if ENV['LOCAL']
     "/home/adam/workspace/rails-templates/" + filename
@@ -30,6 +31,7 @@ module GemHelper
   end
 end
 
+# Convert a list of gems into a valid geminstaller.yml file.
 class GeminstallerFile
   include GemHelper
   def initialize env=nil
@@ -59,15 +61,20 @@ class GeminstallerFile
 end
 
 @geminstaller = GeminstallerFile.new
-def geminstaller gem, env=:default
-  @geminstaller.add gem, env
+def geminstaller s, env=:default
+  @geminstaller.add s, env
 end
 
 # Set up git repository
 git :init
 
+@project_name = File.basename(root)
+def project_name
+  @project_name
+end
+
 # environmentalize
-load_template template_with_env('environmentalist.rb')
+load_template template_with_env('environment.rb')
 
 # application
 geminstaller 'will_paginate'
@@ -78,27 +85,22 @@ geminstaller 'paperclip'
 
 # database - structure loading from here on out
 geminstaller 'rails_structure_loading'
+append_file "Rakefile", "\nrequire 'rails_structure_loading'"
 
 # plugins
 plugin 'exception_notifier', :git => "git://github.com/rails/exception_notification.git -r '2-3-stable'"
 plugin 'state_machine', :git => 'git://github.com/pluginaweek/state_machine.git'
 
 # Install and configure capistrano
-# if yes?("Use capistrano? (y/n)")
+if yes?("Use capistrano? (y/n)")
   capify!
   file 'Capfile', <<-FILE
     load 'deploy' if respond_to?(:namespace) # cap2 differentiator
     Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
     load 'config/deploy'
   FILE
-# end
-
-## SLS Specific
-# shoulda_girl_scaffold
-run "mkdir -p lib/generators"
-inside("generators") do
-  run("git clone git://github.com/abachman/shoulda_girl_scaffold.git lib/generators/shoulda_girl_scaffold && rm -rf shoulda_girl_scaffold/.git")
 end
+
 
 # Create .gitignore file
 file '.gitignore', <<-FILE
@@ -130,16 +132,6 @@ load_template template_with_env('authentication.rb')
 load_template template_with_env('haml.rb')
 # javascript development and service
 load_template template_with_env('javascript.rb')
-# test framework
-load_template template_with_env('test.rb')
-
-# update environment
-file 'config/environment.rb', open(template_with_env('environment/environment.rb')).read
-file 'config/preinitializer.rb', %{
-require 'rubygems'
-require 'geminstaller'
-require 'geminstaller_rails_preinitializer'
-}
 
 # update geminstaller.yml files
 @geminstaller.save
@@ -148,21 +140,39 @@ require 'geminstaller_rails_preinitializer'
 git :add => '.'
 git :commit => "-m 'saved geminstaller files'"
 
+# setup start controller and default layout
 load_template template_with_env('start.rb')
 
-# setup seed data files
-file "lib/tasks/factory_loader.rake", open(template_with_env('data/factory_loader.rake')).read
-run "mkdir test/factories"
+# setup data and scaffold related files
+rakefile "factory_loader.rake", open(template_with_env('data/factory_loader.rake')).read
+run "mkdir -p test/factories"
 file "test/factories/user_factory.rb", open(template_with_env('data/user_factory.rb')).read
 
-run "echo '' >> config/development/environment.rb"
-run "echo 'require \"factory_girl\"' >> config/development/environment.rb"
+# shoulda_girl_scaffold
+inside("lib/generators") { run("git clone git://github.com/abachman/shoulda_girl_scaffold.git") }
+
+append_file "config/development/environment.rb", "\nrequire 'factory_girl'"
 
 # finalize stage 1
 git :add => '.'
 git :commit => "-m 'added seed data'"
 
+# test frameworks
+load_template template_with_env('test.rb')
+
 # load seed data
+# drop just in case
+rake "db:drop"
+rake "db:create"
+rake "db:migrate"
 rake "db:factories:load"
 
-log "Be sure to update config/geminstaller.yml and config/environment.rb to add the appropriate Rails gem version"
+rake "db:drop", :env => 'test'
+rake "db:create", :env => 'test'
+rake "db:migrate", :env => 'test'
+
+git :add => '.'
+git :commit => "-m 'updated schema'"
+
+log "\e[31m[ Final Notes ]\e[0m"
+log "Be sure to update config/geminstaller.yml and config/environment.rb to add the appropriate Rails gem version."

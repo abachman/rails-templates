@@ -11,7 +11,7 @@ generate(:controller, "user_sessions new")
 file "app/models/user.rb", open(template_with_env('authentication/user.rb')).read
 
 # helpers
-file "lib/authlogic_methods.rb", open(template_with_env('authentication/authlogic_methods.rb')).read
+lib "authlogic_methods.rb", open(template_with_env('authentication/authlogic_methods.rb')).read
 
 # controllers
 file "app/controllers/users_controller.rb", open(template_with_env('authentication/users_controller.rb')).read
@@ -55,6 +55,18 @@ file "app/views/users/_form.haml", %{
       %br
       = f.password_field :password_confirmation
     %p
+      = f.label "Status", :state
+      %br
+      %label
+        = f.radio_button :state, "active"
+        Active
+      %label
+        = f.radio_button :state, "pending"
+        Pending
+      %label
+        = f.radio_button :state, "disabled"
+        Disabled
+    %p
       = f.submit "Submit"
 }
 
@@ -84,9 +96,6 @@ route 'map.login "login", :controller => "user_sessions", :action => "new"'
 route 'map.logout "logout", :controller => "user_sessions", :action => "destroy"'
 route 'map.resources :user_sessions'
 route 'map.resources :users'
-
-# migrations
-rake "db:migrate"
 
 # cleanup
 run 'rm app/views/user_sessions/new.html.erb'

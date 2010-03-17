@@ -12,9 +12,8 @@ file 'public/javascripts/vendor/underscore.js',
   open('http://github.com/documentcloud/underscore/raw/master/underscore.js').read
 
 # my files
-file 'lib/fulljslint.js', open(template_with_env('assets/fulljslint.js')).read
-file 'lib/tasks/js.rake', open(template_with_env('assets/js.rake')).read
-file 'lib/tasks/js.rake', open(template_with_env('assets/js.rake')).read
+lib 'fulljslint.js', open(template_with_env('assets/fulljslint.js')).read
+rakefile 'js.rake', open(template_with_env('assets/js.rake')).read
 
 # jammit config
 file "config/assets.yml",  open(template_with_env('assets/assets.yml')).read
