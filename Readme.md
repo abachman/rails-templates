@@ -22,9 +22,9 @@ The application creation process works roughly like this:
 7. load `javascript.rb` - setup jammit for javascript asset management.
 8. save the geminstaller.yml files (see **Application Notes** below)
 9. load `start.rb` - setup a start controller so you've got something to work with.
-1. `test.rb` - setup the testing environment and generate the initial tests.
-
-4. load ngauthier's "shoulda_girl_scaffold" extension from its github repo
+10. setup default factory and some rake tasks to make seeding development data easy
+11. load `test.rb` - setup the testing environment and generate the initial tests.
+12. create and migrate the database.
 
 ## Using the Template
 
