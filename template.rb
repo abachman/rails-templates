@@ -82,6 +82,11 @@ geminstaller 'hpricot'
 geminstaller 'json'
 geminstaller 'state_machine'
 geminstaller 'paperclip'
+append_file 'config/environment.rb', <<-END
+require 'paperclip'
+Paperclip::Attachment.default_options[:url] = "/system/\#{RAILS_ENV}/:class/:attachment/:id/:style/:filename"
+END
+
 
 # database - structure loading from here on out
 geminstaller 'rails_structure_loading'
@@ -89,6 +94,11 @@ append_file "Rakefile", "\nrequire 'rails_structure_loading'"
 
 # plugins
 plugin 'exception_notifier', :git => "git://github.com/rails/exception_notification.git -r '2-3-stable'"
+append_file 'config/environment.rb', <<-END
+ExceptionNotification::Notifier.exception_recipients = %w(adam nick ed john).map {|n| n + "@smartlogicsolutions.com"}
+ExceptionNotification::Notifier.sender_address = %("\#{RAILS_ENV} Error" <noreply@slsdev.net>)
+END
+
 plugin 'state_machine', :git => 'git://github.com/pluginaweek/state_machine.git'
 
 # Install and configure capistrano
@@ -103,7 +113,7 @@ end
 
 
 # Create .gitignore file
-file '.gitignore', <<-FILE
+file '.gitignore', %{
 .DS_Store
 log/*.log
 tmp/**/*
@@ -111,7 +121,7 @@ config/test/database.yml
 config/development/database.yml
 config/development/apache.conf
 .project
-FILE
+}
 
 run 'mkdir -p tmp && touch tmp/restart.txt'
 
@@ -130,6 +140,10 @@ git :commit => "-m 'initial commit'"
 load_template template_with_env('authentication.rb')
 # css and html templating
 load_template template_with_env('haml.rb')
+append_file 'config/environment.rb',  %{
+Haml::Template.options[:format] = :html5
+}
+
 # javascript development and service
 load_template template_with_env('javascript.rb')
 
@@ -175,4 +189,12 @@ git :add => '.'
 git :commit => "-m 'updated schema'"
 
 log "\e[31m[ Final Notes ]\e[0m"
-log "Be sure to update config/geminstaller.yml and config/environment.rb to add the appropriate Rails gem version."
+log %{
+Next:
+
+\e[32m*\e[0m update config/geminstaller.yml and config/environment.rb to add the
+  appropriate Rails gem version.
+
+\e[32m*\e[0m update config/environment.rb to make sure the appropriate people get
+  Exception notification messages.
+}

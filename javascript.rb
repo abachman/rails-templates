@@ -1,4 +1,5 @@
 geminstaller 'jammit'
+gem 'jammit'
 
 git :rm => "public/javascripts/*"
 

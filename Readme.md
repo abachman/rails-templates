@@ -7,9 +7,9 @@ Smartlogic Solutions Rails-app-in-a-box.
 ## Methods
 
 Rails Application Template files are all in the root of the project directory.
-`template.rb` is the main file, it calls the others as needed. Most of the other
-template files load external files into the new project. Those files are contained
-in the child directories under the root of this project.
+`template.rb` is the main file, it calls the others as needed. Most of the
+other template files load external files into the new project. Those files are
+contained in the child directories under the root of this project.
 
 The application creation process works roughly like this:
 
@@ -39,8 +39,13 @@ Tests should also run out of the box.
 
 ## Application Notes
 
-You'll notice we don't use the normal `gem` command, since we use geminstaller on our projects. If you need to add a gem to the template, use the form `geminstaller '$GEMNAME'` instead of `gem '$GEMNAME'`. If it's a gem that's only needed in one environment (e.g., "test"), call `geminstaller '$GEMNAME', :test`.
+You'll notice we don't use the normal `gem` command, since we use geminstaller
+on our projects. If you need to add a gem to the template, use the form
+`geminstaller '$GEMNAME'` instead of `gem '$GEMNAME'`. If it's a gem that's
+only needed in one environment (e.g., "test"), call `geminstaller '$GEMNAME',
+:test`.
 
-Make sure all your calls to `geminstaller` come before `@geminstaller.save`, that's when the geminstaller.yml files are written.
+Make sure all your calls to `geminstaller` come before `@geminstaller.save`,
+that's when the geminstaller.yml files are written.
 
 
