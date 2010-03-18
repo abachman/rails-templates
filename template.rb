@@ -87,7 +87,6 @@ require 'paperclip'
 Paperclip::Attachment.default_options[:url] = "/system/\#{RAILS_ENV}/:class/:attachment/:id/:style/:filename"
 END
 
-
 # database - structure loading from here on out
 geminstaller 'rails_structure_loading'
 append_file "Rakefile", "\nrequire 'rails_structure_loading'"
@@ -188,9 +187,8 @@ rake "db:migrate", :env => 'test'
 git :add => '.'
 git :commit => "-m 'updated schema'"
 
-log "\e[31m[ Final Notes ]\e[0m"
 log %{
-Next:
+\e[34m[ Next ]\e[0m
 
 \e[32m*\e[0m update config/geminstaller.yml and config/environment.rb to add the
   appropriate Rails gem version.
