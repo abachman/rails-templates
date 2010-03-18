@@ -38,7 +38,7 @@ config/development/apache.conf into your passenger .conf dir and run the applica
 Tests should also run out of the box.
 
 To run the template from a local directory (working copy), add the `LOCAL=true`
-env argument and reference `template.rb`. For example:
+env argument and reference `template.rb` locally. For example:
 
     LOCAL=true rails -m rails-templates/template.rb $PROJECT_NAME
 
