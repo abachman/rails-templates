@@ -28,7 +28,7 @@ The application creation process works roughly like this:
 
 ## Using the Template
 
-`rails -m http://github.com/smartlogic/rails-templates/raw/master/template.rb $PROJECT_NAME`
+    rails -m http://github.com/smartlogic/rails-templates/raw/master/template.rb $PROJECT_NAME
 
 That's it.
 
@@ -36,6 +36,11 @@ From here you should be able to start the built in server or edit and link
 config/development/apache.conf into your passenger .conf dir and run the application.
 
 Tests should also run out of the box.
+
+To run the template from a local directory (working copy), add the `LOCAL=true`
+env argument and reference `template.rb`. For example:
+
+    LOCAL=true rails -m rails-templates/template.rb $PROJECT_NAME
 
 ## Application Notes
 
