@@ -68,6 +68,7 @@ end
 # Set up git repository
 git :init
 
+# get name of project folder, the alternative is to use: ask("What is the project's Unix name?")
 @project_name = File.basename(root)
 def project_name
   @project_name
@@ -109,7 +110,6 @@ if yes?("Use capistrano? (y/n)")
     load 'config/deploy'
   FILE
 end
-
 
 # Create .gitignore file
 file '.gitignore', %{
