@@ -9,58 +9,9 @@ def template_with_env filename
   end
 end
 
-module GemHelper
-  # search remotely for gems
-  def gem_search gem
-    `gem search -r #{gem}`.grep(/^#{gem} \(/).first.chomp
-  end
-
-  # converts "rails (2.3.5)" to "2.3.5"
-  def gem_version gem
-    gem.gsub(/[^ ]* \(([0-9.]*),?.*\)/, "\\1")
-  end
-
-  def gem_to_yaml _gem
-    # find most recent version of gem
-    puts "finding #{_gem}"
-    gem = gem_search _gem
-
-    # convert to yaml
-    puts "found #{gem}"
-    "- name: #{gem.split(' ').first}\n  version: '= #{gem_version(gem)}'"
-  end
-end
-
-# Convert a list of gems into a valid geminstaller.yml file.
-class GeminstallerFile
-  include GemHelper
-  def initialize env=nil
-    @gems = {:default => []}
-    @paths = {:default => "config/geminstaller.yml"}
-    %w(test staging production).each do |env|
-      @paths[env.to_sym] = "config/#{env}/geminstaller.yml"
-      @gems[env.to_sym] = []
-    end
-  end
-
-  def add gem, env=:default
-    @gems[env.to_sym] << gem
-  end
-
-  def save
-    puts "\e[34m[ Saving Gems ]\e[0m"
-    @gems.keys.each do |env|
-      File.open(@paths[env], 'w') do |f|
-        yaml_gems = @gems[env].map {|_g| gem_to_yaml(_g)}
-        f.write "---\ndefaults:\n  install-options: '--no-rdoc --no-ri'\ngems:\n" + yaml_gems.join("\n")
-      end
-    end
-  end
-
-  private
-end
-
-@geminstaller = GeminstallerFile.new
+# use geminstaller instead of gem
+require 'geminstaller_builder'
+@geminstaller = GeminstallerBuilder.new
 def geminstaller s, env=:default
   @geminstaller.add s, env
 end
@@ -90,7 +41,9 @@ END
 
 # database - structure loading from here on out
 geminstaller 'rails_structure_loading'
-append_file "Rakefile", "\nrequire 'rails_structure_loading'"
+append_file "Rakefile", %{
+require 'rails_structure_loading'
+}
 
 # plugins
 plugin 'exception_notifier', :git => "git://github.com/rails/exception_notification.git -r '2-3-stable'"
@@ -136,7 +89,7 @@ git :commit => "-m 'initial commit'"
 
 # other templates
 # authentication and user administration
-load_template template_with_env('authentication.rb')
+load_template template_with_env('users.rb')
 # css and html templating
 load_template template_with_env('haml.rb')
 append_file 'config/environment.rb',  %{
@@ -158,13 +111,13 @@ load_template template_with_env('start.rb')
 
 # setup data and scaffold related files
 rakefile "factory_loader.rake", open(template_with_env('data/factory_loader.rake')).read
-run "mkdir -p test/factories"
-file "test/factories/user_factory.rb", open(template_with_env('data/user_factory.rb')).read
 
 # shoulda_girl_scaffold
 inside("lib/generators") { run("git clone git://github.com/abachman/shoulda_girl_scaffold.git") }
 
-append_file "config/development/environment.rb", "\nrequire 'factory_girl'"
+append_file "config/development/environment.rb", %{
+require 'factory_girl'
+}
 
 # finalize stage 1
 git :add => '.'
@@ -178,7 +131,6 @@ load_template template_with_env('test.rb')
 rake "db:drop"
 rake "db:create"
 rake "db:migrate"
-rake "db:factories:load"
 
 rake "db:drop", :env => 'test'
 rake "db:create", :env => 'test'

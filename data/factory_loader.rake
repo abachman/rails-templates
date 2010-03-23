@@ -8,14 +8,11 @@ namespace :db do
       puts "LOADING FACTORIES"
       ## Users
       admin_user = Factory(:admin,
-                           :email => 'admin@website.net',
+                           :email => 'admin@website.url',
                            :state => 'active')
       non_admin_user = Factory(:user,
-                           :email => 'user@website.net',
+                           :email => 'client@website.url',
                            :state => 'active')
-      pending_user = Factory(:user,
-                           :email => 'pending@website.net',
-                           :state => 'pending')
     end
 
     desc "Clean up file system, reset database, and load factories."

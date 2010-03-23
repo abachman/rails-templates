@@ -15,13 +15,4 @@ require 'quickerclip'
 class ActiveSupport::TestCase
   self.use_transactional_fixtures = true
   self.use_instantiated_fixtures  = false
-
-  # Log in a given user with authlogic (user passed in through block)
-  def self.log_in &block
-    setup :activate_authlogic
-
-    setup do
-      UserSession.create! block.call
-    end
-  end
 end

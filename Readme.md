@@ -17,7 +17,7 @@ The application creation process works roughly like this:
 2. load some standard gems and plugins
 3. `capify!` if needed
 4. clean up the project directory and do a git checkin.
-5. load `authentication.rb` - setup authlogic and the requisite models, views, and controllers
+5. load `users.rb` - setup authlogic and the requisite models, views, and controllers
 6. load `haml.rb` - setup compass and haml for content rendering.
 7. load `javascript.rb` - setup jammit for javascript asset management.
 8. save the geminstaller.yml files (see **Application Notes** below)
@@ -42,6 +42,11 @@ env argument and reference `template.rb` locally. For example:
 
     LOCAL=true rails -m rails-templates/template.rb $PROJECT_NAME
 
+## Requirements
+
+The geminstaller_builder gem.
+
+
 ## Application Notes
 
 You'll notice we don't use the normal `gem` command, since we use geminstaller
@@ -52,5 +57,7 @@ only needed in one environment (e.g., "test"), call `geminstaller '$GEMNAME',
 
 Make sure all your calls to `geminstaller` come before `@geminstaller.save`,
 that's when the geminstaller.yml files are written.
+
+### Users
 
 
