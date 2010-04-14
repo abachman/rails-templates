@@ -7,19 +7,18 @@ generate(:model, "user", "state:string role:string email:string crypted_password
 generate(:session, "user_session")
 generate(:controller, "user_sessions new")
 
-
 # models
-file "app/models/user.rb", 
+file "app/models/user.rb",
   open(template_with_env('users/user.rb')).read
 
 # helpers
-lib "authlogic_methods.rb", 
+lib "authlogic_methods.rb",
   open(template_with_env('users/authlogic_methods.rb')).read
 
 # controllers
-file "app/controllers/users_controller.rb", 
+file "app/controllers/users_controller.rb",
   open(template_with_env('users/users_controller.rb')).read
-file 'app/controllers/user_sessions_controller.rb', 
+file 'app/controllers/user_sessions_controller.rb',
   open(template_with_env('users/user_sessions_controller.rb')).read
 
 # user views
@@ -169,9 +168,9 @@ file "test/unit/user_test.rb",
   open(template_with_env('users/user_test.rb')).read
 
 # password resets
-file "app/controllers/password_resets_controller.rb", 
+file "app/controllers/password_resets_controller.rb",
   open(template_with_env('users/password_resets_controller.rb')).read
-file "test/functional/password_resets_controller_test.rb", 
+file "test/functional/password_resets_controller_test.rb",
   open(template_with_env('users/password_resets_controller_test.rb')).read
 
 run "mkdir -p app/views/password_resets"
@@ -218,10 +217,8 @@ file "app/views/password_resets/new.html.haml", %{
     = submit_tag "Reset"
 }
 
-
-
 # cancan (authority)
-file "app/models/ability.rb", 
+file "app/models/ability.rb",
   open(template_with_env('users/ability.rb')).read
 
 # routes
