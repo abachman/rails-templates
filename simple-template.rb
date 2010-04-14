@@ -62,6 +62,7 @@ git :commit => "-m 'added asset management'"
 
 generate :controller, :demo, :index
 route 'map.resources :demo'
+route "map.root :controller => :demo"
 
 log %{
 \e[34m[ Next ]\e[0m
